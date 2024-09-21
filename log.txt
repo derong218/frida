@@ -1,0 +1,34 @@
+DeviceInfo.getDeviceName is called: context=android.app.Application@f3c75ec
+DeviceInfo.getDeviceName result=M40(N9H3)
+DeviceInfo.getNetworkOperator is called: context=android.app.Application@f3c75ec
+DeviceInfo.getNetworkOperator result=无
+DeviceInfo.getFirstInstallTime is called: context=android.app.Application@f3c75ec
+DeviceInfo.getFirstInstallTime result=1723814361086
+DeviceInfo.getBoot is called
+DeviceInfo.getBoot result=433204
+Kiwi.server_to_local is called: str=kiwi_live
+Kiwi.server_to_local result=0|127.0.0.1|13421
+Kiwi.server_to_local is called: str=kiwi_live
+Kiwi.server_to_local result=0|127.0.0.1|13421
+SuperNetworkKitPlugin.initConnection is called: str=ws://127.0.0.1:42835/tunnel/a033b072?z=1&nobase64=0&token=42a0079025abc7f626fcc16e52bd5ef2, str2=cZ1dAC6cE5wlH9E0mg4fly6B5ASMXBU4, z=true
+SuperNetworkKitPlugin.initConnection result=1
+Kiwi.server_to_local is called: str=jz01.wugongshan.shop
+Kiwi.server_to_local result=-5|127.0.0.1|0
+Kiwi.server_to_local is called: str=kiwi_install
+Kiwi.server_to_local result=0|127.0.0.1|23497
+Kiwi.server_to_local is called: str=kiwi_hd
+Kiwi.server_to_local result=0|127.0.0.1|2316
+Kiwi.server_to_local is called: str=kiwi_yx
+Kiwi.server_to_local result=0|127.0.0.1|31458
+Kiwi.server_to_local is called: str=kiwi_yx
+Kiwi.server_to_local result=0|127.0.0.1|31458
+Kiwi.server_to_local is called: str=kiwi_hd
+Kiwi.server_to_local result=0|127.0.0.1|2316
+Kiwi.server_to_local is called: str=kiwi_pay
+Kiwi.server_to_local result=0|127.0.0.1|61921
+Kiwi.server_to_local is called: str=kiwi_yx
+Kiwi.server_to_local result=0|127.0.0.1|31458
+Kiwi.server_to_local is called: str=kiwi_im
+Kiwi.server_to_local result=0|127.0.0.1|31252
+SuperNetworkKitPlugin.initConnection is called: str=ws://127.0.0.1:38123/tunnel/open?z=1&token=42a0079025abc7f626fcc16e52bd5ef2, str2=null, z=true
+SuperNetworkKitPlugin.initConnection result=2
