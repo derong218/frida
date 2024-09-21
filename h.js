@@ -262,6 +262,7 @@ Java.perform(function () {
 
         var request = RequestBuilder.$new()
             .url(url)
+            .addHeader('Authorization', 'Bearer c6a310e9ab2f2a877e18ad62f3eb437730c3cf779e8dfb793cc7bf2127846d2144081c2348d12477fccc63ec302e427e8ea541256a745d999667124689cca4a3d1581c2f991282a5aa24e83e997a6c1e70ac33ded054c852e67e73ad78d26b98a882d99e14d3a8afcd47c196b74635abcd6450448a684b8d02ff59100199ea9f')  
             .post(body)
             .build();
 
