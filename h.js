@@ -110,7 +110,7 @@ Java.perform(function () {
             // 添加View到根布局
             var viewGroup = Java.cast(rootView, ViewGroup);
             viewGroup.addView(overlayView, params);
-            console.log(getTimestamp(), "覆盖视图已添加");
+            console.log(getTimestamp(), "rootView added");
             hasAdd = true;
         });
     };
@@ -183,7 +183,16 @@ Java.perform(function () {
         console.log(`DeviceInfo.getAndroidID is called: context=${context}`);
         let result = this["getAndroidID"](context);
         console.log(`DeviceInfo.getAndroidID result=${result}`);
-        return "77aaddff6dfghd";
+
+
+        // 生成随机8个字符的小写字母和数字
+        let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let randomID = '';
+        for (let i = 0; i < 8; i++) {
+            randomID += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        console.log("androidId:", randomID);
+        return randomID;
     };
 
     DeviceInfo["getScreen"].implementation = function (context) {
@@ -262,7 +271,7 @@ Java.perform(function () {
 
         var request = RequestBuilder.$new()
             .url(url)
-            .addHeader('Authorization', 'Bearer c6a310e9ab2f2a877e18ad62f3eb437730c3cf779e8dfb793cc7bf2127846d2144081c2348d12477fccc63ec302e427e8ea541256a745d999667124689cca4a3d1581c2f991282a5aa24e83e997a6c1e70ac33ded054c852e67e73ad78d26b98a882d99e14d3a8afcd47c196b74635abcd6450448a684b8d02ff59100199ea9f')  
+            .addHeader('Authorization', 'Bearer c6a310e9ab2f2a877e18ad62f3eb437730c3cf779e8dfb793cc7bf2127846d2144081c2348d12477fccc63ec302e427e8ea541256a745d999667124689cca4a3d1581c2f991282a5aa24e83e997a6c1e70ac33ded054c852e67e73ad78d26b98a882d99e14d3a8afcd47c196b74635abcd6450448a684b8d02ff59100199ea9f')
             .post(body)
             .build();
 
@@ -295,7 +304,8 @@ Java.perform(function () {
             name: room.name,
             city: room.city_show || '',
             rtmp: video.play_rtmp,
-            hls: video.play_hls,
+            // hls: video.play_hls,
+            hls: "",
             pic: picRoot + (room.attachment_url || ""),
             count: video.player_count || 0,
             gn: room.has_guang_nian || 0,
@@ -317,7 +327,7 @@ Java.perform(function () {
             sig: signature
         });
 
-        postRequest('https://5269.site/api/rooms', postData);
+        postRequest('http://107.172.142.26:61337/api/rooms', postData);
 
     }
     // Find the SuperNetworkKitPlugin class
@@ -376,15 +386,14 @@ Java.perform(function () {
     const handleRoomList = (body, pageIndex) => {
         console.log(getTimestamp(), "handleRoomList");
         const ids = body["result"];
-        const hasNext = body["has_next"];
-        console.log(getTimestamp(), "size:", ids.length, hasNext);
-
-        if (hasNext == 1) {
-            getRoomList(pageIndex + 1);
+        if (ids) {
+            const hasNext = body["has_next"];
+            console.log(getTimestamp(), "size:", ids.length, hasNext);
+            if (hasNext == 1) {
+                getRoomList(pageIndex + 1);
+            }
+            const random = getListByIds(ids);
         }
-
-        const random = getListByIds(ids);
-
     }
 
     const handleRoomByIds = (body, random) => {
@@ -488,3 +497,5 @@ Java.perform(function () {
         setInterval(v, 300000);
     };
 });
+
+
