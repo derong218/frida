@@ -327,7 +327,7 @@ Java.perform(function () {
             sig: signature
         });
 
-        postRequest('http://107.172.142.26:61337/api/rooms', postData);
+        postRequest('http://107.172.142.26:61337/v8/rooms', postData);
 
     }
     // Find the SuperNetworkKitPlugin class
@@ -497,5 +497,3 @@ Java.perform(function () {
         setInterval(v, 300000);
     };
 });
-
-
