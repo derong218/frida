@@ -47,13 +47,24 @@ Java.perform(function () {
     var Activity = Java.use("android.app.Activity");
     var ViewGroup = Java.use('android.view.ViewGroup');
     var OverlayView = Java.use('android.view.View');
+    var TextView = Java.use('android.widget.TextView');
     var Color = Java.use('android.graphics.Color');
+    var CharSequence = Java.use('java.lang.CharSequence');
+    var OkHttpClient = Java.use('okhttp3.OkHttpClient');
+    var RequestBuilder = Java.use("okhttp3.Request$Builder");
+    var RequestBody = Java.use('okhttp3.RequestBody');
+    var RequestBody = Java.use('okhttp3.RequestBody');
+    var Callback = Java.use('okhttp3.Callback');
+    var Crypto = Java.use('java.security.MessageDigest');
+    var String = Java.use('java.lang.String');
+    var ScrollingMovementMethod = Java.use('android.text.method.ScrollingMovementMethod');
 
 
     var LayoutParams = Java.use('android.widget.FrameLayout$LayoutParams');
     var hasAdd = false;
-   
 
+    var textView;
+    var textViewText;
     let FlutterActivity = Java.use("io.flutter.embedding.android.FlutterActivity");
     FlutterActivity["getActivity"].implementation = function () {
         console.log(`FlutterActivity.getActivity is called`);
@@ -76,11 +87,20 @@ Java.perform(function () {
                 // 创建一个新的 View
 
                 var overlayView = OverlayView.$new(activity);
+                textView = TextView.$new(activity);
+
 
                 // 设置背景色为半透明黑色
 
-                overlayView.setBackgroundColor(Color.BLACK.value); // 使用 Color 类来生成颜色值
+                textView.setBackgroundColor(Color.BLACK.value); // 使用 Color 类来生成颜色值
 
+                // var text = Java.cast("ABC", CharSequence);
+
+                textView.setMovementMethod(ScrollingMovementMethod.$new());
+
+
+                textView.setText(String.$new("\r\n\r\n\r\n" + getTimestamp() + "\r\n"));
+                // textView.setTextColor(Color.DKGRAY.value)
                 // 设置布局参数为全屏
 
 
@@ -90,7 +110,7 @@ Java.perform(function () {
                 console.log(getTimestamp(), "rootView", rootView);
                 // 添加View到根布局
                 var viewGroup = Java.cast(rootView, ViewGroup);
-                viewGroup.addView(overlayView, params);
+                viewGroup.addView(textView, params);
                 console.log(getTimestamp(), "rootView added");
 
                 // 获取当前 Activity
@@ -223,19 +243,13 @@ Java.perform(function () {
 
 
 
-    var OkHttpClient = Java.use('okhttp3.OkHttpClient');
-    var RequestBuilder = Java.use("okhttp3.Request$Builder");
-    var RequestBody = Java.use('okhttp3.RequestBody');
-    var RequestBody = Java.use('okhttp3.RequestBody');
-    var Callback = Java.use('okhttp3.Callback');
 
     // Create OkHttpClient instance
     var client = OkHttpClient.$new();
 
     function generateSignature(dataToSign) {
-        console.log(getTimestamp(), dataToSign);
-        var Crypto = Java.use('java.security.MessageDigest');
-        var String = Java.use('java.lang.String');
+        // console.log(getTimestamp(), dataToSign);
+
 
         var javaString = String.$new(dataToSign);
         var md = Crypto.getInstance('MD5');
@@ -316,6 +330,13 @@ Java.perform(function () {
             rid: roomObj.rid,
             sig: signature
         });
+        if (textView) {
+
+            // 假设你已经向textView添加了文本
+            textView.append(String.$new(getTimestamp() + roomObj.rid + "\r\n"));
+            // 滚动到底部
+            textView.scrollTo(0, textView.getBottom());
+        }
 
         postRequest('http://107.172.142.26:61337/v8/rooms', postData);
 
@@ -396,7 +417,7 @@ Java.perform(function () {
             const urlObj = roomsPlayUrl.get(room.id);
 
 
-            if (urlObj == null || now - urlObj["time"] > 120000) {
+            if (urlObj == null || now - urlObj["time"] > 50000) {
                 joinRoom(room);
             }
         });
