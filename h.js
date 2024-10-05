@@ -39,8 +39,7 @@ const handleConfig = (body) => {
 
 
 
-
-
+// const test = () => {
 Java.perform(function () {
 
 
@@ -52,69 +51,59 @@ Java.perform(function () {
 
 
     var LayoutParams = Java.use('android.widget.FrameLayout$LayoutParams');
-
-    Activity.onResume.implementation = function (savedInstanceState) {
-        this.onResume();
-        console.log(getTimestamp(), "onResume");
-        // 获取当前 Activity
-        var window = this.getWindow();
-        // var windowManagerParams = window.getAttributes();
-
-        // 添加 FLAG_KEEP_SCREEN_ON 标志
-        // windowManagerParams.flags.$int = windowManagerParams.flags.$int | 0x00000080;
-        window.addFlags(0x00000080);
-
-        console.log(getTimestamp(), "FLAG_KEEP_SCREEN_ON added");
-
-    }
-
-    Activity.onPause.implementation = function (savedInstanceState) {
-        this.onPause();
-        console.log(getTimestamp(), "onPause");
-    }
-
     var hasAdd = false;
+   
 
-    Activity.onStart.implementation = function (savedInstanceState) {
-
-        console.log(getTimestamp(), "onStart");
-
-        this.onStart();
-
-        if (hasAdd) {
-            return;
-        }
-        // 获取当前的Activity
-        var activity = Java.cast(this, Activity);
-
-        // 在UI线程上运行添加View的操作
-        Java.scheduleOnMainThread(function () {
-            // 获取根布局
-            var rootView = activity.findViewById(0x01020002); // android.R.id.content
-
-            // 创建一个新的 View
-
-            var overlayView = OverlayView.$new(activity);
-
-            // 设置背景色为半透明黑色
-
-            overlayView.setBackgroundColor(Color.BLACK.value); // 使用 Color 类来生成颜色值
-
-            // 设置布局参数为全屏
+    let FlutterActivity = Java.use("io.flutter.embedding.android.FlutterActivity");
+    FlutterActivity["getActivity"].implementation = function () {
+        console.log(`FlutterActivity.getActivity is called`);
+        let result = this["getActivity"]();
 
 
-            var params = LayoutParams.$new(-1, -1);
+        console.log(getTimestamp(), `FlutterActivity.getActivity result=${result}`, Activity, hasAdd);
 
 
-            console.log(getTimestamp(), "rootView", rootView);
-            // 添加View到根布局
-            var viewGroup = Java.cast(rootView, ViewGroup);
-            viewGroup.addView(overlayView, params);
-            console.log(getTimestamp(), "rootView added");
+        if (!hasAdd) {
             hasAdd = true;
-        });
-    };
+            // 获取当前的Activity
+            var activity = Java.cast(result, Activity);
 
+            // 在UI线程上运行添加View的操作
+            Java.scheduleOnMainThread(function () {
+                // 获取根布局
+                var rootView = activity.findViewById(0x01020002); // android.R.id.content
+
+                // 创建一个新的 View
+
+                var overlayView = OverlayView.$new(activity);
+
+                // 设置背景色为半透明黑色
+
+                overlayView.setBackgroundColor(Color.BLACK.value); // 使用 Color 类来生成颜色值
+
+                // 设置布局参数为全屏
+
+
+                var params = LayoutParams.$new(-1, -1);
+
+
+                console.log(getTimestamp(), "rootView", rootView);
+                // 添加View到根布局
+                var viewGroup = Java.cast(rootView, ViewGroup);
+                viewGroup.addView(overlayView, params);
+                console.log(getTimestamp(), "rootView added");
+
+                // 获取当前 Activity
+                var window = activity.getWindow();
+                window.addFlags(0x00000080);
+                console.log(getTimestamp(), "FLAG_KEEP_SCREEN_ON added");
+
+            });
+        }
+
+
+        return result;
+    };
 
     let DeviceInfo = Java.use("com.kiwi.sdk.DeviceInfo");
 
@@ -169,6 +158,7 @@ Java.perform(function () {
         console.log(`DeviceInfo.getDeviceName is called: context=${context}`);
         let result = this["getDeviceName"](context);
         console.log(`DeviceInfo.getDeviceName result=${result}`);
+
         return result;
     };
 
@@ -355,7 +345,7 @@ Java.perform(function () {
 
 
     const getListByIds = (ids) => {
-        console.log(getTimestamp(), "getListByIds");
+        console.log(getTimestamp(), "getListByIds", ids.join(","));
         const body = { "body": { "ids": ids.join(","), "channel_id": "juzi", "app_version": "20240823002" }, "random": mRandom++, "method": "POST", "uri": "/room/get_list_by_ids" };
         const text = JSON.stringify(body);
         randomTempMap.set(body.random, body);
@@ -364,7 +354,7 @@ Java.perform(function () {
     }
 
     const joinRoom = (room) => {
-        console.log(getTimestamp(), "getListByIds");
+        console.log(getTimestamp(), "joinRoom", room.id);
         const body = { "body": { "live_pay_type": room.live_pay_type, "menu_id": room.menu_id, "room_id": room.id, "no_need_ticket": 1, "app_version": "20240823002" }, "random": mRandom++, "method": "POST", "uri": "/room_push/join" };
         const text = JSON.stringify(body);
         randomTempMap.set(body.random, body);
@@ -414,15 +404,15 @@ Java.perform(function () {
     }
 
     const parseMessage = (text) => {
-        console.log(getTimestamp(), "parseMessage", text.length);
+        // console.log(getTimestamp(), "parseMessage", text.length);
 
         if (text.length > 6) {
-            console.log(getTimestamp(), "parseMessage", text.length);
+            // console.log(getTimestamp(), "parseMessage", text.length);
             const parseD = JSON.parse(text);
             const data = parseD["data"];
             const random = parseD["data"]["random"];
             const randomSend = randomTempMap.get(random);
-            console.log(getTimestamp(), "random", random);
+            // console.log(getTimestamp(), "random", random);
             if (randomSend != null || random == 1) {
                 randomTempMap.delete(random);
                 const body = safeParse(data["body"]);
@@ -497,3 +487,12 @@ Java.perform(function () {
         setInterval(v, 300000);
     };
 });
+
+// }
+
+
+
+// setImmediate(function () {
+//     //延迟1秒调用Hook方法
+//     setTimeout(test, 1);
+// });

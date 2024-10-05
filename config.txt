@@ -1,0 +1,5 @@
+auth.token = "qetuoadgjl13579"
+
+api.xx.com {
+        reverse_proxy 127.0.0.1:61337
+}
