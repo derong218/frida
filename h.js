@@ -66,6 +66,16 @@ Java.perform(function () {
     var textView;
     var textViewText;
     let FlutterActivity = Java.use("io.flutter.embedding.android.FlutterActivity");
+
+    var menuId = 93;
+    const updateMenuIdByVip = function (isVip) {
+        if (isVip) {
+            menuId = 93;
+        } else {
+            menuId = 2;
+        }
+    }
+
     FlutterActivity["getActivity"].implementation = function () {
         console.log(`FlutterActivity.getActivity is called`);
         let result = this["getActivity"]();
@@ -313,10 +323,13 @@ Java.perform(function () {
             pic: picRoot + (room.attachment_url || ""),
             count: video.player_count || 0,
             gn: room.has_guang_nian || 0,
+            fee: room.live_fee || 0,
+            payType: room.live_pay_type || 0,
             rid: room.id,
         };
         var salt = 'bkflg(003_lkjdkf12';
-        var dataToSign = roomObj.name + roomObj.city + roomObj.rtmp + roomObj.hls + roomObj.pic + roomObj.count + roomObj.gn + roomObj.rid + salt;
+        var dataToSign = roomObj.name + roomObj.city + roomObj.rtmp + roomObj.hls + roomObj.pic + roomObj.count + roomObj.gn
+            + roomObj.fee + roomObj.payType + roomObj.rid + salt;
         var signature = generateSignature(dataToSign);
 
         var postData = JSON.stringify({
@@ -327,6 +340,8 @@ Java.perform(function () {
             pic: roomObj.pic,
             count: roomObj.count,
             gn: roomObj.gn,
+            fee: roomObj.fee || 0,
+            payType: roomObj.payType || 0,
             rid: roomObj.rid,
             sig: signature
         });
@@ -389,6 +404,7 @@ Java.perform(function () {
         const room = body["room"];
 
         const video = body["video"];
+        // console.log(getTimestamp(), "room", JSON.stringify(room));
         // console.log(getTimestamp(),"roomDetail:", room.id, room.name, video.play_rtmp, video.play_hls, video.play_flv);
         roomsPlayUrl.set(room.id, { "url": video["play_rtmp"], "time": Date.now() });
         singleSaveRoomToDatabase(room, video);
@@ -494,16 +510,13 @@ Java.perform(function () {
         const v = function () {
             Java.perform(function () {
                 try {
-                    // console.log(getTimestamp(), 'isConnected with: ' + connIDForSendString);
-                    // var result = pluginInstance.isConnected(connIDForSendString);
-                    // console.log(getTimestamp(), 'isConnected result: ' + result);
                     getRoomList();
-
                 } catch (e) {
                     console.log(getTimestamp(), 'Error calling sendString:', e);
                 }
             });
         }
+
         setTimeout(v, 10000);
         setInterval(v, 300000);
     };
